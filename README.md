@@ -1,5 +1,5 @@
 Here are some loose guidlines meant to give you an idea of what information we expect to find in each repository. Feel free to present your documentation in the most accessible/suitable order and style but you **must** include project data relating to the headings below, if relevant to your project. Also, include your final proposal in the top directory.
-
+  
 [**A very good example**](https://github.com/Biological-Microsystems-Laboratory/micropipette)
 
 Consider using [GitHub for desktop](https://desktop.github.com/), the user interface and experience is so much better than the web version of Github, in my opinion.
