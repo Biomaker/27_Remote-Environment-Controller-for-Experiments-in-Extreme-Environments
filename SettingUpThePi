@@ -1,0 +1,96 @@
+## GitHubSetup
+# How to clone github folder into your drive
+# From: https://www.linux.com/learn/beginning-git-and-github-linux-users
+
+## Fetching Data From Online Repository
+$ mkdir BioMaker
+$ cd BioMaker
+$ mkdir git-repos
+$ git clone https://github.com/BioMakers/27_Remote-Environment-Controller-for-Experiments-in-Extreme-Environments
+-> Enter Usaername and Password
+
+## Storing github password and username
+##$ cd ~
+##-> make a new text file here called netrc, save it, then rename to .netrc
+##$ sudo nano ~./netrc 
+###Write this in the file and save:
+##machine github.com
+##	login pab96
+##	password <InsertPassword>
+### Save
+##$ chmod 600 ~/.netrc -> to make it invisible to other useres
+$To set up ssh client follow this: https://help.github.com/articles/checking-for-existing-ssh-keys/ -> make sure to click the linux icon under the heading
+$ ssh-keygen -t rsa -b 4096 -C "pab96"cam.ac.uk"
+-> enter and don't add a passphrase just press enter
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/id_rsa
+$ sudo apt-get install xclip
+$ xclip -sel clip < ~/.ssh/id_rsa.pub
+-> follow instructrions on how to add SSH key (does no work in standrad pi browser use chrome (potentially on dfferent laptop to insert code, the code you can read from:sudo nano ~/.ssh/id_rsa.pub) websitde: https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/#platform-linux
+
+## Uploading modifyed files to GitHub
+git config --global user.name "pab96"
+git config --global user.email "ppab96@cam.ac.uk"
+git status -s 
+-> Or simplified for all files in the folder execute ./uploadToGiHub
+
+## Setting the time zone
+sudo raspi-config-> Internationalisation options-> change timezone-> Europe-> london
+	
+
+## Setting up the pi such that programm is started upon power up
+# remove password and username request upon booting:
+$ cd ~/../../etc
+$ sudo nano inittab 
+-> scroll down to: 1:2345:respawn:/sbin/getty 115200 tty1 (or similar) -> and put a "#" before it to comment it out
+-> Then place under the commented line:
+1:2345:respawn:/bin/login -f pi tty1 </dev/tty1 >/dev/tty1 2>&1
+-> Ctrl+X, Y, ENTER, ENTER
+# Following: https://raspberrypi.stackexchange.com/questions/8734/execute-script-on-start-up
+$ cd ~ # going to pi folder
+$ sudo nano .bashrc
+-> add as last line in the file:
+./BioMaker/GitHubGardenObserver/executeUponPiLogin
+-> CTRL X, Y, ENTER
+
+#$ sudo nano /etc/init.d/NameOfFile     -> makes a new file called NameOfFile here I used: ExecuteUponRaspberryBoot
+##! /bin/sh
+## /etc/init.d/NameOfFile
+#ctrl+X, Y, Enter 		       -> to safe the file
+#$ sudo chmod 755 /etc/init.d/NameOfFile -> makes the file executable
+#$ sudo update-rc.d superscript defaults-> register to be run at startup
+#-> For modifying this file type: sudoedit /etc/init.d/NameOfFile
+
+##setting up SPI interface with raspberry (for communication with ADC converter)
+# Following http://www.raspberrypi-spy.co.uk/2014/08/enabling-the-spi-interface-on-the-raspberry-pi/
+sudo raspi-config
+-> Advanced options
+->SPI
+-> Yes
+->OK
+-> finish, need to reboot Pi
+-> after reboot check if it was enabled by:
+lsmod | grep spi_
+-> should show spi_bcm2708 or spi_bcm2835
+# Installing The MCP3008 Library: https://github.com/adafruit/Adafruit_Python_MCP3008
+sudo apt-get install git build-essential python-dev
+cd ~
+git clone https://github.com/adafruit/Adafruit_Python_MCP3008.git
+cd Adafruit_Python_MCP3008
+sudo python setup.py install
+
+sudo apt-get update
+sudo apt-get install build-essential python-dev python-smbus python-pip
+sudo pip install adafruit-mcp3008
+
+## Making screenshots with the Pi
+suda apt-get install scrot
+scrot /home/pi/Desktop/ScreenShotFileName.png -d 3 #making a screenshot after delay of 3 sec
+
+## Programming the arduino from the pi
+# Installing:
+$ sudo apt-get update
+$ sudo apt-get install arduino
+# To run the arduino IDE:
+$ arduino
+
